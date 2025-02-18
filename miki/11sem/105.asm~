@@ -1,0 +1,54 @@
+%include "st_io.inc"
+global _start
+section .data
+a dd -1, -5, -10, 0, 3
+n dd 5
+section .text
+
+QWQ:
+mov ebp, esp
+mov ecx, [ebp]
+mov ebx, ecx
+M:
+mov eax, [ebp + ecx *4]
+mov edx, [ebp -4 + ecx*4]
+cmp [eax], [edx]
+JLE M2
+mov ebx, ecx
+M2: 
+dec ecx
+cmp ecx, 2
+JNE M
+mov edx, [ebp -4 +ebx*4]
+mov esi, [edx]
+SIGNINT esi
+PUTCHAR 0xa
+mov dword [ebp -4 +ebx*4], 700
+
+mov ecx, [ebp]
+M3:
+mov esi, [ebp + ecx*4]
+SIGNINT esi
+PUTCHAR " "
+dec esi
+cmp esi, 1
+JNE M3
+PUTCHAR 0xa
+ret
+
+_start:
+mov ecx, [n]
+mov eax, 0
+mov esi, 0
+mov ebp, 4
+L:
+mul ebp
+add eax, a
+push eax
+inc esi
+mov eax, esi
+loop L
+mov ecx, [n]
+push ecx
+call QWQ
+FINISH
